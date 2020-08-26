@@ -21,6 +21,7 @@ const Course = (props) => {
     <div>
     <Header course={course.name} />
     <Content parts={course.parts} />
+    <Total parts={course.parts} />
     </div>
   )
 }
@@ -31,9 +32,15 @@ const Part = (props) => (
   </p>
 )
 
-/*const Total = (props) => (
-  <p>Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}</p>  
-)*/
+const Total = (props) => {
+  const { parts } = props
+
+  const totExercises = parts.reduce((prevValue,part) => prevValue + part.exercises, 0 )
+
+  return (
+    <div><hr/>Number of exercises <b>{totExercises}</b></div>  
+  )
+}
 
 const App = () => {
     const course = {
