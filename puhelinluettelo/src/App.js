@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 
 const App = () => {
   const [ persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas',
+      phone: '4878484848' 
+    }
   ]) 
   const [ newName, setNewName ] = useState('')
-
+  const [ newPhone, setNewPhone ] = useState('')
   const addPerson = (event) => {
     event.preventDefault()
 
@@ -15,7 +17,8 @@ const App = () => {
       alert(`${newName} on jo lisätty puhelinluetteloon`)
     } else {
       const personObject = {
-        name: newName
+        name: newName,
+        phone: newPhone
       }
       
       setPersons(persons.concat(personObject))
@@ -26,10 +29,12 @@ const App = () => {
   const handleChange = (event) => {
     setNewName(event.target.value)
   }
-
+  const handlePhoneChange = (event) => {
+    setNewPhone(event.target.value)
+  }
   const Person = ({person}) => {
     return (
-      <div>{person.name}</div>
+      <div>{person.name} {person.phone}</div>
     )
   }
 
@@ -39,6 +44,9 @@ const App = () => {
       <form onSubmit={addPerson}> 
         <div>
           Nimi: <input onChange={handleChange} />
+        </div>
+        <div>
+          Puhelinnumero: <input onChange={handlePhoneChange} />
         </div>
         <div>
           <button type="submit">Lisää</button>
