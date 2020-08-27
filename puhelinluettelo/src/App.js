@@ -2,12 +2,16 @@ import React, { useState } from 'react'
 
 const App = () => {
   const [ persons, setPersons] = useState([
-    { name: 'Arto Hellas',
-      phone: '4878484848' 
-    }
+    { name: 'Arto Hellas', phone: '040-123456' },
+    { name: 'Ada Lovelace', phone: '39-44-5323523' },
+    { name: 'Dan Abramov', phone: '12-43-234345' },
+    { name: 'Mary Poppendieck', phone: '39-23-6423122' },
+    { name: 'Mikko Kemppi', phone: '1212121' },
   ]) 
   const [ newName, setNewName ] = useState('')
   const [ newPhone, setNewPhone ] = useState('')
+  const [ search, setSearch ] = useState('')
+
   const addPerson = (event) => {
     event.preventDefault()
 
@@ -32,6 +36,14 @@ const App = () => {
   const handlePhoneChange = (event) => {
     setNewPhone(event.target.value)
   }
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value) 
+  }
+
+  const personsToShow = (search==="")
+  ? persons
+  : persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
+
   const Person = ({person}) => {
     return (
       <div>{person.name} {person.phone}</div>
@@ -53,7 +65,10 @@ const App = () => {
         </div>
       </form>
       <h2>Numerot</h2>
-      {persons.map(person => <Person key={person.name} person={person} />)}
+      <div>
+        Hae: <input onChange={handleSearchChange} />
+      </div>
+      {personsToShow.map(person => <Person key={person.name} person={person} />)}
     </div>
   )
 
