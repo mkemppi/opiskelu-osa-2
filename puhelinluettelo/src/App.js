@@ -8,13 +8,19 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    
-    const personObject = {
-      name: newName
+
+    let val = newName.toLowerCase();
+    let matches = persons.filter(test => test.name.toLowerCase().includes(val));
+    if(matches.length>0) {
+      alert(`${newName} on jo lisätty puhelinluetteloon`)
+    } else {
+      const personObject = {
+        name: newName
+      }
+      
+      setPersons(persons.concat(personObject))
+      setNewName('')
     }
-  
-    setPersons(persons.concat(personObject))
-    setNewName('')
   }
 
   const handleChange = (event) => {
