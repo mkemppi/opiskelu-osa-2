@@ -1,5 +1,40 @@
 import React, { useState } from 'react'
 
+const Filter = (props) => {
+  return (
+    <div>
+      Hae: <input onChange={props.handleSearchChange} />
+    </div>
+  )
+}
+
+const Persons = ({personsToShow}) => {
+  return (
+    personsToShow.map(person => <Person key={person.name} person={person} />)
+  )
+}
+const Person = ({person}) => {
+  return (
+    <div>{person.name} {person.phone}</div>
+  )
+}
+
+const PersonForm = (props) => {
+  return (
+    <form onSubmit={props.addPerson}> 
+      <div>
+        Nimi: <input onChange={props.handleChange} />
+      </div>
+      <div>
+        Puhelinnumero: <input onChange={props.handlePhoneChange} />
+      </div>
+      <div>
+        <button type="submit">Lisää</button>
+      </div>
+    </form>
+  )
+}
+
 const App = () => {
   const [ persons, setPersons] = useState([
     { name: 'Arto Hellas', phone: '040-123456' },
@@ -44,31 +79,13 @@ const App = () => {
   ? persons
   : persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
 
-  const Person = ({person}) => {
-    return (
-      <div>{person.name} {person.phone}</div>
-    )
-  }
-
   return (
     <div>
       <h2>Puhelinluettelo</h2>
-      <form onSubmit={addPerson}> 
-        <div>
-          Nimi: <input onChange={handleChange} />
-        </div>
-        <div>
-          Puhelinnumero: <input onChange={handlePhoneChange} />
-        </div>
-        <div>
-          <button type="submit">Lisää</button>
-        </div>
-      </form>
+      <PersonForm addPerson={addPerson} handleChange={handleChange} handlePhoneChange={handlePhoneChange} />
       <h2>Numerot</h2>
-      <div>
-        Hae: <input onChange={handleSearchChange} />
-      </div>
-      {personsToShow.map(person => <Person key={person.name} person={person} />)}
+      <Filter handleSearchChange={handleSearchChange} />
+      <Persons personsToShow={personsToShow} />
     </div>
   )
 
