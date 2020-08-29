@@ -10,24 +10,25 @@ const Filter = (props) => {
   )
 }
 
-const Countries = ({countriesToShow}) => {
+const Countries = (props) => {
 
-  if(countriesToShow.length>10) {
+  if(props.countriesToShow.length>10) {
     return (
       <h3>Liikaa vaihtoehtoja</h3>
     )
   }
 
-  if(countriesToShow.length===1) {
+  if(props.countriesToShow.length===1) {
     return (
-      countriesToShow.map(country => <Country key={country.name} country={country} />)
+      props.countriesToShow.map(country => <Country key={country.name} country={country} />)
     )
   }
 
   return (
-    countriesToShow.map(country => <div>{country.name}</div>)
+    props.countriesToShow.map(country => <div>{country.name} <button onClick={() => props.setSearch(country.name)}>näytä</button></div>)
   )
 }
+
 const Country = ({country}) => {
   console.log(country)
   return (
@@ -74,7 +75,7 @@ const App = () => {
     <div>
       <h2>Etsi maista</h2>
       <Filter handleSearchChange={handleSearchChange} />
-      <Countries countriesToShow={countriesToShow} />
+      <Countries setSearch={setSearch} countriesToShow={countriesToShow} />
     </div>
   )
 
