@@ -1,6 +1,11 @@
 import React, { useState,useEffect } from 'react'
 import axios from 'axios'
 
+/*
+ohjelman käynnistys näin
+($env:REACT_APP_WEATHERSTACK_API_KEY = "abcdef") -and (npm start)
+*/
+
 const Filter = (props) => {
   return (
     <div>
@@ -30,7 +35,6 @@ const Countries = (props) => {
 }
 
 const Country = ({country}) => {
-  console.log(country)
   return (
     <div>
       <h1>{country.name}</h1>
@@ -45,16 +49,45 @@ const Country = ({country}) => {
       <p>
         <img src={country.flag} alt="lippu" width="220" />
       </p>
+      <Weather country={country} />
     </div>
   )
 }
 
+const Weather = ({country}) => {
+  const api_key = process.env.REACT_APP_WEATHERSTACK_API_KEY
+  const [ weather, setWeather] = useState(false) 
+  const url = "http://api.weatherstack.com/current?units=m&access_key="+api_key+"&query="+country.capital
+  useEffect(() => {
+    axios
+      .get(url)
+      .then(response => {
+        setWeather(response.data)
+      })
+  }, [])
 
+  console.log("weather",weather)
+
+  if(weather) {
+    return (
+      <div>
+        <h4>Säätiedot {country.capital}</h4>
+        <p>Lämpötila {weather.current.temperature} &deg;C</p>
+        <p><img src={weather.current.weather_icons[0]} alt="sääkuvake" /></p>
+        <p>Tuuli {weather.current.wind_dir} {weather.current.wind_speed} km/h  </p>
+      </div>
+    )
+  } 
+
+  return (
+    <div></div>
+  )
+
+}
 
 const App = () => {
   const [ countries, setCountries] = useState([]) 
   const [ search, setSearch ] = useState('')
-
   useEffect(() => {
     axios
       .get('https://restcountries.eu/rest/v2/all')
