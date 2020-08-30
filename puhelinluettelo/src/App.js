@@ -1,5 +1,4 @@
 import React, { useState,useEffect } from 'react'
-import axios from 'axios'
 import personService from './services/person'
 
 const Filter = (props) => {
@@ -10,15 +9,34 @@ const Filter = (props) => {
   )
 }
 
-const Persons = ({personsToShow}) => {
+const Persons = (props) => {
+  const { personsToShow, setPersons } = props
   return (
-    personsToShow.map(person => <Person key={person.name} person={person} />)
+    personsToShow.map(person => <Person key={person.name} persons={personsToShow} person={person} setPersons={setPersons} />)
   )
 }
-const Person = ({person}) => {
+
+const Person = (props) => {
+  const { person, setPersons, persons } = props
+  const removePerson = (event) => {
+    if(window.confirm("Oletko varma että haluat poistaa henkilön "+person.name)) {
+      personService
+      .remove(person.id)
+        .then(() => {
+        //  console.log("prevPersons",prevPersons)
+        setPersons(persons.filter(p => p.id !== person.id))
+
+        //setNewName('')
+      })
+      .catch(error => {
+        console.log('fail',error)
+      })
+    }
+  } 
   return (
-    <div>{person.name} {person.phone}</div>
+    <div>{person.name} {person.phone} <button onClick={removePerson}>Poista</button></div>
   )
+
 }
 
 const PersonForm = (props) => {
@@ -102,7 +120,7 @@ const App = () => {
       <PersonForm addPerson={addPerson} handleChange={handleChange} handlePhoneChange={handlePhoneChange} />
       <h2>Numerot</h2>
       <Filter handleSearchChange={handleSearchChange} />
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} setPersons={setPersons} setNewName={setNewName} />
     </div>
   )
 
