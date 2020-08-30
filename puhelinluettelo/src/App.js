@@ -23,10 +23,7 @@ const Person = (props) => {
       personService
       .remove(person.id)
         .then(() => {
-        //  console.log("prevPersons",prevPersons)
         setPersons(persons.filter(p => p.id !== person.id))
-
-        //setNewName('')
       })
       .catch(error => {
         console.log('fail',error)
@@ -75,8 +72,20 @@ const App = () => {
     let val = newName.toLowerCase();
     let matches = persons.filter(test => test.name.toLowerCase().includes(val));
     if(matches.length>0) {
-      alert(`${newName} on jo lisätty puhelinluetteloon`)
-    } else {
+      if(window.confirm(`${newName} on jo lisätty puhelinluetteloon, haluatko korvata vanhan numeron uudella?`)) {
+
+        const findPerson = persons.find(p => p.name === newName)
+        const changedPerson = { ...findPerson, phone: newPhone }
+        //console.log("changedPerson",changedPerson)
+        
+        personService
+        .update(changedPerson.id, changedPerson)
+          .then(response => {
+          setPersons(persons.map(person => person.name !== newName ? person : response))
+        })
+          
+      }
+    } else {      
       const personObject = {
         name: newName,
         phone: newPhone
