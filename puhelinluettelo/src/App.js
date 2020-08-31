@@ -10,23 +10,32 @@ const Filter = (props) => {
 }
 
 const Persons = (props) => {
-  const { personsToShow, setPersons } = props
+  const { personsToShow, setPersons, setMessage } = props
   return (
-    personsToShow.map(person => <Person key={person.name} persons={personsToShow} person={person} setPersons={setPersons} />)
+    personsToShow.map(person => 
+      <Person 
+        key={person.name} 
+        persons={personsToShow} 
+        person={person} 
+        setPersons={setPersons} 
+        setMessage={setMessage} />
+    )
   )
 }
 
 const Person = (props) => {
-  const { person, setPersons, persons } = props
+  const { person, setPersons, persons, setMessage } = props
   const removePerson = (event) => {
     if(window.confirm("Oletko varma että haluat poistaa henkilön "+person.name)) {
       personService
       .remove(person.id)
         .then(() => {
         setPersons(persons.filter(p => p.id !== person.id))
+        setMessage(['error','Tiedot poistettu'])
+
       })
       .catch(error => {
-        console.log('fail',error)
+        setMessage(['error','Tiedot oli jo poistettu ennestään'])
       })
     }
   } 
@@ -52,12 +61,29 @@ const PersonForm = (props) => {
   )
 }
 
+const Notification = ({ message,setMessage }) => {
+  if (message === null) {
+    return null
+  }
+  setTimeout(() => {
+    setMessage(null)
+  }, 5000)
+
+  return (
+    <div className={message[0]}>
+      {message[1]}
+    </div>
+  )
+}
+
+
+
 const App = () => {
   const [ persons, setPersons] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newPhone, setNewPhone ] = useState('')
   const [ search, setSearch ] = useState('')
-
+  const [ message, setMessage ] = useState(null)
   useEffect(() => {
     personService
       .getAll()
@@ -83,7 +109,8 @@ const App = () => {
           .then(response => {
           setPersons(persons.map(person => person.name !== newName ? person : response))
         })
-          
+        
+        setMessage(['success','Tiedot päivitetty'])
       }
     } else {      
       const personObject = {
@@ -98,6 +125,7 @@ const App = () => {
         setNewName('')
       })
 
+      setMessage(['success','Tiedot lisätty'])
       /*
       axios
       .post('http://localhost:3001/persons', personObject)
@@ -126,10 +154,11 @@ const App = () => {
   return (
     <div>
       <h2>Puhelinluettelo</h2>
+      <Notification message={message} setMessage={setMessage} />
       <PersonForm addPerson={addPerson} handleChange={handleChange} handlePhoneChange={handlePhoneChange} />
       <h2>Numerot</h2>
       <Filter handleSearchChange={handleSearchChange} />
-      <Persons personsToShow={personsToShow} setPersons={setPersons} setNewName={setNewName} />
+      <Persons personsToShow={personsToShow} setPersons={setPersons} setNewName={setNewName} setMessage={setMessage} />
     </div>
   )
 
