@@ -35,6 +35,7 @@ const Person = (props) => {
 
       })
       .catch(error => {
+        setPersons(persons.filter(p => p.id !== person.id))
         setMessage(['error','Tiedot oli jo poistettu ennestään'])
       })
     }
